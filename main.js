@@ -7,48 +7,54 @@ var prime = require("prime/prime"),
 
 var instances = {}
 
-var Node = function(node){
+var Node = prime({
 
-    this.node = function(i){
-        return i ? null : node
-    }
+    constructor: function(node){
+        this.n = node;
+    },
+    
+    node: function(i){
+        return i ? null : this.n;
+    },
 
-    this.nodes = function(s, e){
-        return [node].slice(s, e)
-    }
+    nodes: function(s, e){
+        return [this.n].slice(s, e)
+    },
 
-    this.count = function(){
+    count: function(){
         return 1
-    }
+    },
 
-    this.handle = function(ƒ){
+    handle: function(ƒ){
         var buffer = []
-        var res = ƒ.call(this, node, 0, buffer)
+        var res = ƒ.call(this, this.n, 0, buffer)
         if (res != null && res !== false && res !== true) buffer.push(res)
         return buffer
     }
 
-}
+});
 
 // Nodes
 
-var Nodes = function(nodes){
+var Nodes = prime({
 
-    this.node = function(i){
-        var node = nodes[i == null ? 0 : i]
+    inherits: Node,
+    
+    node: function(i){
+        var node = this.n[i == null ? 0 : i]
         return node ? node : null
-    }
+    },
 
-    this.nodes = function(s, e){
-        return array.slice(nodes, s, e)
-    }
+    nodes: function(s, e){
+        return array.slice(this.n, s, e)
+    },
 
-    this.count = function(){
-        return nodes.length
-    }
+    count: function(){
+        return this.n.length
+    },
 
-    this.handle = function(ƒ){
-        var buffer = []
+    handle: function(ƒ){
+        var buffer = [], nodes = this.n
         for (var i = 0, l = nodes.length; i < l; i++){
             var node = nodes[i],
                 res = ƒ.call(new Node(node), node, i, buffer)
@@ -58,7 +64,7 @@ var Nodes = function(nodes){
         return buffer
     }
 
-}
+});
 
 var $ = prime({constructor: function(nodes){
     if (nodes == null) return null
